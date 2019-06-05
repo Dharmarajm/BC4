@@ -1,5 +1,7 @@
 {
   "name": "WeCare4",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

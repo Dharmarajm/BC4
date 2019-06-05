@@ -1,0 +1,37 @@
+
+<ion-content class="back_content">
+  
+  <p class="timer">{{time}}</p>
+
+  <div class="row" style="margin-top: 75% !important;margin-left: 20px;">
+      <div class="btn-label" id="upload_record" >
+        <ion-button [disabled]="!isenabled" (click)="start()">
+          <!-- <ion-icon name="ios-mic-outline" *ngIf="!Pause"></ion-icon> -->
+          <ion-icon name="mic" *ngIf="!Pause"></ion-icon> 
+          <!-- <ion-icon name="play" *ngIf="Pause"></ion-icon> -->
+          <ion-icon name="pause" *ngIf="Pause"></ion-icon>
+          <!-- <ion-icon name="ios-pause-outline" *ngIf="Pause"></ion-icon> -->
+        </ion-button>
+        <p *ngIf="!Pause">Record</p>
+        <p *ngIf="Pause">Pause</p>
+      </div>
+
+      <div class="btn-label" id="upload_record" >
+        <ion-button style="font-size: 13px;background: #ece2e2de;color: black;" [disabled]="!Stop" (click)="stop()">
+           <!-- <ion-icon name="square-outline"></ion-icon> -->
+           <ion-icon name="square"></ion-icon>
+          <!-- <ion-icon name="mic"></ion-icon> -->
+        </ion-button>
+        <p>Stop</p>
+      </div>
+
+      <div class="btn-label" id="upload_record" (click)="confirm()">
+        <ion-button color="primary" [disabled]="isenabled">
+          <!-- <ion-icon name="ios-checkmark-circle-outline"></ion-icon> -->
+          <ion-icon name="checkmark-circle"></ion-icon>
+        </ion-button>
+        <p>Confirm</p>
+      </div>
+  </div>
+
+</ion-content>
