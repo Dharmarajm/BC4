@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { MediaCapture, MediaFile, CaptureError, CaptureAudioOptions, CaptureImageOptions } from '@ionic-native/media-capture/ngx';
 import { File,FileEntry, IFile } from '@ionic-native/file/ngx';
 import { Media, MediaObject } from '@ionic-native/media/ngx';
-import { Platform } from '@ionic/angular';
+import { Platform,AlertController } from '@ionic/angular';
+
 
 @Component({
   selector: 'app-health-diary-add',
@@ -21,13 +22,15 @@ export class HealthDiaryAddPage implements OnInit {
   interval:any;
   zero:any;
   show:any;
+  description:any;
+  playURI:any;
   isenabled:boolean=true;
   audioTrack:boolean = false;
   recordStart:boolean= false;
   Stop:boolean = false;
   Pause:boolean =false;
 
-  constructor(private mediaCapture: MediaCapture,private media: Media,private file: File,public platform: Platform) {
+  constructor(private mediaCapture: MediaCapture,private media: Media,private file: File,public platform: Platform,public alertController: AlertController) {
     this.show=3; 
   }
 
@@ -44,9 +47,12 @@ export class HealthDiaryAddPage implements OnInit {
 	if(this.audioTrack==false && this.recordStart==false){
         
         this.fileName = 'record'+new Date().getDate()+new Date().getMonth()+new Date().getFullYear()+new Date().getHours()+new Date().getMinutes()+new Date().getSeconds()+'.mp3';
-              
-         this.file.createFile(this.file.externalDataDirectory,this.fileName,{append: true}).then((res) => {
+         console.log(this.file.externalDataDirectory)
+         /*this.file.checkDir(this.file.dataDirectory, 'mydir').then(() => console.log('Directory exists')).catch(err =>
+  console.log('Directory doesn'));*/
+         this.file.createFile(this.file.externalDataDirectory,this.fileName, true).then(() => {
             this.filePath = this.file.externalDataDirectory.replace(/file:\/\//g, '') + this.fileName;
+            console.log(this.filePath)
             this.audio = this.media.create(this.filePath);
             this.audioTrack=true;
             this.Stop=true;
@@ -106,7 +112,7 @@ export class HealthDiaryAddPage implements OnInit {
 
     startRecord() {
         if (this.platform.is('ios')) {
-          this.fileName = 'record'+new Date().getDate()+new Date().getMonth()+new Date().getFullYear()+new Date().getHours()+new Date().getMinutes()+new Date().getSeconds()+'.3gp';
+          this.fileName = new Date().getDate()+new Date().getMonth()+new Date().getFullYear()+new Date().getHours()+new Date().getMinutes()+new Date().getSeconds()+'.3gp';
           this.filePath = this.file.documentsDirectory.replace(/file:\/\//g, '') + this.fileName;
           this.audio = this.media.create(this.filePath);
         } else if (this.platform.is('android')) {
@@ -114,7 +120,7 @@ export class HealthDiaryAddPage implements OnInit {
           this.filePath = this.file.externalDataDirectory.replace(/file:\/\//g, '') + this.fileName;
           this.audio = this.media.create(this.filePath);
         }
-        this.audio.startRecord();
+        this.          .startRecord();
         this.recording = true;
     }
 
@@ -125,7 +131,7 @@ export class HealthDiaryAddPage implements OnInit {
      this.audioList.push(data);
      localStorage.setItem("audiolist", JSON.stringify(this.audioList));
      this.recording = false;
-     this.getAudioList();
+     //this.getAudioList();
     }
 
 
@@ -150,6 +156,56 @@ export class HealthDiaryAddPage implements OnInit {
         var obj = hours + ":" + minutes + ":" + seconds;
         return obj;
     }
+
+    async confirm(){
+        
+        let fileName = this.fileName;
+        console.log(this.fileName)
+        console.log(fileName)
+        const alert = await this.alertController.create({
+          header: 'Do you want to save this audio!',
+          message: '<p>File Name:'+fileName+'</p>',
+          inputs: [
+            {
+              name: 'description',
+              placeholder: 'Description',
+            }
+          ],
+          buttons: [
+            {
+              text: 'Cancel',
+              role: 'cancel',
+              cssClass: 'secondary',
+              handler: (blah) => {
+                console.log('Confirm Cancel: blah');
+              }
+            }, {
+              text: 'Okay',
+              handler: (data) => {
+                console.log(this.fileName)
+                this.description=data["description"];
+                
+                localStorage.setItem("audiolist",JSON.stringify(this.filePath));
+                console.log(this.filePath)
+                console.log(JSON.parse(localStorage.getItem("audiolist")));
+                localStorage.setItem("fileNameaudio",JSON.stringify(this.fileName));
+                console.log(localStorage.getItem("fileNameaudio"));
+                
+              }
+            }
+          ]
+        });
+
+        await alert.present();
+        
+
+    }
+
+    play(){
+       console.log(this.filePath)
+       //this.audio = this.media.create(this.filePath);
+       this.audio.play();
+    } 
 
 
 

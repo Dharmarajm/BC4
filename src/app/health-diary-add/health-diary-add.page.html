@@ -1,7 +1,7 @@
 
 <ion-content class="back_content">
   
-  <p class="timer">{{time}}</p>
+  <p class="timer" style="background: black;">{{time}}</p>
 
   <div class="row" style="margin-top: 75% !important;margin-left: 20px;">
       <div class="btn-label" id="upload_record" >
@@ -33,5 +33,7 @@
         <p>Confirm</p>
       </div>
   </div>
+
+  <button (click)="play()">Play</button>
 
 </ion-content>
