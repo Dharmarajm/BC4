@@ -19,7 +19,7 @@
     	<span>{{data["user"]["age"]}}</span>
     	
     </div> -->
-    <ion-card >
+    <ion-card *ngFor="let data of diary" (click)="diaryDetails(data,diary)">
 	  <!-- <ion-card-header>
 	    <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
 	    <ion-card-title>Card Title</ion-card-title>
@@ -27,64 +27,16 @@
 
 	  <ion-card-content>
 	  	<ion-row >
-		    <ion-col size="3">
+		    <ion-col size="1">
 		      <ion-icon name="play" style="font-size:25px;"></ion-icon>
 		    </ion-col>
-		    <ion-col size="6">
-		      <h5>Heart</h5>
-		      <p>ion-col fgfdgd gfgfdgd fgfgfdg</p>
+		    <ion-col size="7">
+		      <h5>{{data.name}}</h5>
+		      <p>{{data.description}}</p>
 		    </ion-col>
-		    <ion-col size="3">
-		      <span>03 May 2019</span>
-		      <span>12:49:00 am</span>
-		    </ion-col>
-	    </ion-row>
-	    
-	  </ion-card-content>
-    </ion-card>
-
-    <ion-card>
-	  <!-- <ion-card-header>
-	    <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-	    <ion-card-title>Card Title</ion-card-title>
-	  </ion-card-header> -->
-
-	  <ion-card-content>
-	  	<ion-row >
-		    <ion-col size="3">
-		      <ion-icon name="play" style="font-size:25px;"></ion-icon>
-		    </ion-col>
-		    <ion-col size="6">
-		      <h5>Heart</h5>
-		      <p>ion-col fgfdgd gfgfdgd fgfgfdg</p>
-		    </ion-col>
-		    <ion-col size="3">
-		      <span>03 May 2019</span>
-		      <span>12:49:00 am</span>
-		    </ion-col>
-	    </ion-row>
-	    
-	  </ion-card-content>
-    </ion-card>
-
-    <ion-card>
-	  <!-- <ion-card-header>
-	    <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-	    <ion-card-title>Card Title</ion-card-title>
-	  </ion-card-header> -->
-
-	  <ion-card-content>
-	  	<ion-row >
-		    <ion-col size="3">
-		      <ion-icon name="play" style="font-size:25px;"></ion-icon>
-		    </ion-col>
-		    <ion-col size="6">
-		      <h5>Heart</h5>
-		      <p>ion-col fgfdgd gfgfdgd fgfgfdg</p>
-		    </ion-col>
-		    <ion-col size="3">
-		      <span>03 May 2019</span>
-		      <span>12:49:00 am</span>
+		    <ion-col size="4">
+		      <span class="dateStyle">{{data.date}}</span><br>
+		      <span class="dateStyle">{{data.time}}</span>
 		    </ion-col>
 	    </ion-row>
 	    

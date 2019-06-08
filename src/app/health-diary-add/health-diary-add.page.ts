@@ -15,6 +15,8 @@ export class HealthDiaryAddPage implements OnInit {
   recording: boolean = false;
   filePath: string;
   fileName: string;
+  OriginalFileName:any;
+  uploadURI:any;
   audio: MediaObject;
   audioList: any[] = [];
   sec:number = 0;
@@ -29,7 +31,7 @@ export class HealthDiaryAddPage implements OnInit {
   recordStart:boolean= false;
   Stop:boolean = false;
   Pause:boolean =false;
-
+  
   constructor(private mediaCapture: MediaCapture,private media: Media,private file: File,public platform: Platform,public alertController: AlertController) {
     this.show=3; 
   }
@@ -47,12 +49,12 @@ export class HealthDiaryAddPage implements OnInit {
 	if(this.audioTrack==false && this.recordStart==false){
         
         this.fileName = 'record'+new Date().getDate()+new Date().getMonth()+new Date().getFullYear()+new Date().getHours()+new Date().getMinutes()+new Date().getSeconds()+'.mp3';
-         console.log(this.file.externalDataDirectory)
+         
          /*this.file.checkDir(this.file.dataDirectory, 'mydir').then(() => console.log('Directory exists')).catch(err =>
   console.log('Directory doesn'));*/
-         this.file.createFile(this.file.externalDataDirectory,this.fileName, true).then(() => {
+         this.file.createFile(this.file.externalDataDirectory ,this.fileName, true).then(() => {
             this.filePath = this.file.externalDataDirectory.replace(/file:\/\//g, '') + this.fileName;
-            console.log(this.filePath)
+            
             this.audio = this.media.create(this.filePath);
             this.audioTrack=true;
             this.Stop=true;
@@ -117,10 +119,10 @@ export class HealthDiaryAddPage implements OnInit {
           this.audio = this.media.create(this.filePath);
         } else if (this.platform.is('android')) {
           this.fileName = 'record'+new Date().getDate()+new Date().getMonth()+new Date().getFullYear()+new Date().getHours()+new Date().getMinutes()+new Date().getSeconds()+'.3gp';
-          this.filePath = this.file.externalDataDirectory.replace(/file:\/\//g, '') + this.fileName;
+          this.filePath = this.file.dataDirectory.replace(/file:\/\//g, '') + this.fileName;
           this.audio = this.media.create(this.filePath);
         }
-        this.          .startRecord();
+        this.audio.startRecord();
         this.recording = true;
     }
 
@@ -160,15 +162,18 @@ export class HealthDiaryAddPage implements OnInit {
     async confirm(){
         
         let fileName = this.fileName;
-        console.log(this.fileName)
-        console.log(fileName)
+        
         const alert = await this.alertController.create({
           header: 'Do you want to save this audio!',
           message: '<p>File Name:'+fileName+'</p>',
           inputs: [
             {
+              name: 'File name',
+              placeholder: 'Enter File Name',
+            },
+            {
               name: 'description',
-              placeholder: 'Description',
+              placeholder: 'Enter Description',
             }
           ],
           buttons: [
@@ -182,14 +187,37 @@ export class HealthDiaryAddPage implements OnInit {
             }, {
               text: 'Okay',
               handler: (data) => {
-                console.log(this.fileName)
-                this.description=data["description"];
                 
+                this.description = data["description"];
+                let file_name = data['File name'];
+                
+                let fromDirectory = this.file.externalDataDirectory ;
+                let toDirectory = this.file.externalDataDirectory 
+                let OldfileName= this.fileName;
+                let NewfileName= file_name+'.mp3';
+                this.file.copyFile(fromDirectory , OldfileName , toDirectory , NewfileName).then((res) => {
+                  
+                  this.OriginalFileName=res['name'];
+                  let nativeFileURL=res['nativeURL'];
+                  let localPlayURL = this.file.externalDataDirectory.replace(/file:\/\//g, '') + this.OriginalFileName;
+                  
+                  this.file.resolveLocalFilesystemUrl(localPlayURL).then((fileEntry: FileEntry) => {
+                    return new Promise((resolve, reject) => {
+                     fileEntry.file(meta => resolve(meta), error => reject(error));
+                    });
+                  }).then((fileMeta: IFile) => {
+                     let type = fileMeta.type.split('/');
+                     let dir = fileMeta['localURL']
+                     this.uploadURI=dir;
+                      //this.playPath=this.uploadURI;
+                     
+                  }).catch(err=>console.log(err)); 
+                },err => {
+                  console.log('err: ', err);
+                });
                 localStorage.setItem("audiolist",JSON.stringify(this.filePath));
-                console.log(this.filePath)
-                console.log(JSON.parse(localStorage.getItem("audiolist")));
+               
                 localStorage.setItem("fileNameaudio",JSON.stringify(this.fileName));
-                console.log(localStorage.getItem("fileNameaudio"));
                 
               }
             }

@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar>
+   <!--  <progress-bar [progress]="currentTrack.progress"></progress-bar> -->
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    
+	<ion-grid>
+	  <ion-row>
+	  	 <ion-col>
+	  	 	<div class="ion-text-center">
+	  	 		<p>{{currentTrack?.name}}</p>
+	  	    </div>
+	  	 </ion-col>
+	  </ion-row>
+	</ion-grid> 
+   
+
+</ion-content>
+
+<ion-footer>
+   <ion-grid>
+         <ion-row>
+
+            <ion-col size="4">
+                <ion-button (click)="prevTrack()"><ion-icon name="skip-backward"></ion-icon></ion-button>
+            </ion-col>
+
+            <ion-col size="4">
+                <ion-button *ngIf="!currentTrack.playing" (click)="playTrack(currentTrack)"><ion-icon name="play"></ion-icon></ion-button>
+                <ion-button *ngIf="currentTrack.playing" (click)="pauseTrack(currentTrack)"><ion-icon name="pause"></ion-icon></ion-button>
+            </ion-col>
+
+            <ion-col size="4">
+                <ion-button (click)="nextTrack()"><ion-icon name="skip-forward"></ion-icon></ion-button>
+            </ion-col>
+
+        </ion-row>
+    </ion-grid>
+</ion-footer>
